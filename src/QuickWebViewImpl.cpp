@@ -19,3 +19,7 @@ void QuickWebViewImpl::resizeEvent(QResizeEvent *ev){
 void QuickWebViewImpl::navigate(const QString& url){
     m_webview->navigate(url.toStdString());
 }
+
+QuickWebViewImpl::~QuickWebViewImpl(){
+    delete m_webview;
+}

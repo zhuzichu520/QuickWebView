@@ -7,7 +7,7 @@ ApplicationWindow {
     width: 800
     height: 600
     visible: true
-    title: qsTr("QuickWindow")
+    title: qsTr("QuickWebView")
 
     RowLayout{
         id: layout_controller

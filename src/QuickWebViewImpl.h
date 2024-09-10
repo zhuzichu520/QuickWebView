@@ -22,6 +22,7 @@ class QuickWebViewImpl : public QWindow
     QML_ELEMENT
 public:
     explicit QuickWebViewImpl(QWindow *parent = nullptr);
+    ~QuickWebViewImpl();
     Q_INVOKABLE void navigate(const QString& url);
 protected:
     void resizeEvent(QResizeEvent *ev) override;
