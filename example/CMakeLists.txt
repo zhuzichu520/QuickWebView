@@ -15,16 +15,16 @@ qt_add_executable(${PROJECT_NAME}
 
 set(RESOURCES_FILES
     qtquickcontrols2.conf
-    webres/test.in.html
-    webres/tailwindcss.in.js
 )
 
 set(QML_FILES
     main.qml
 )
 
-configure_file(webres/test.in.html ${CMAKE_CURRENT_BINARY_DIR}/webres/test.html COPYONLY)
-configure_file(webres/tailwindcss.in.js ${CMAKE_CURRENT_BINARY_DIR}/webres/tailwindcss.js COPYONLY)
+set(WEBRES_FILES
+    webres/tailwindcss.js
+    webres/test.html
+)
 
 qt_add_qml_module(${PROJECT_NAME}
     URI example
@@ -47,6 +47,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
     QuickWebView
 )
+
+add_custom_target(${PROJECT_NAME}_webres
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/webres ${CMAKE_CURRENT_BINARY_DIR}/webres
+    SOURCES ${WEBRES_FILES}
+)
+
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_webres)
 
 if (QUICKWEBVIEW_BUILD_STATIC_LIB)
     target_link_libraries(
