@@ -109,6 +109,7 @@ ApplicationWindow {
             QuickWebView{
                 id: webview
                 anchors.fill: parent
+                debug: true
                 Component.onCompleted: {
                     webview.navigate("appdir:/webres/test.html")
                     webview.setNavigateListener(function(url){
@@ -179,9 +180,10 @@ ApplicationWindow {
                     })
                 }
             }
+
             Loading {
                 id: loading_2
-                anchors.fill: webview_2
+                anchors.fill: parent
             }
         }
     }

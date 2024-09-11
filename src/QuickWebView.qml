@@ -4,12 +4,12 @@ import QuickWebView
 
 WindowContainer {
     id: control
-    signal dispatch
+    property bool debug: false
+    Component.onCompleted: {
+        web_impl.init(control.debug)
+    }
     window: QuickWebViewImpl{
         id: web_impl
-        onDispatch:{
-            control.dispatch()
-        }
     }
     function navigate(url){
         web_impl.navigate(url)
