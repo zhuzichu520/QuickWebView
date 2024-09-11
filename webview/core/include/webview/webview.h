@@ -634,6 +634,7 @@ private:
 } // namespace detail
 
 using dispatch_fn_t = std::function<void()>;
+using navigate_cb_fn_t = std::function<void(const std::string &uri, void *usercontext)>;
 
 class error_info {
 public:
@@ -1309,6 +1310,7 @@ window.__webview__.onUnbind(" +
   noresult terminate() { return terminate_impl(); }
   noresult dispatch(std::function<void()> f) { return dispatch_impl(f); }
   noresult set_title(const std::string &title) { return set_title_impl(title); }
+  noresult set_navigate_listener(navigate_cb_fn_t callback, void *arg){ return set_navigate_listener_impl(callback,arg); };
 
   noresult set_size(int width, int height, webview_hint_t hints) {
     return set_size_impl(width, height, hints);
@@ -1331,6 +1333,7 @@ protected:
   virtual noresult run_impl() = 0;
   virtual noresult terminate_impl() = 0;
   virtual noresult dispatch_impl(std::function<void()> f) = 0;
+  virtual noresult set_navigate_listener_impl(navigate_cb_fn_t callback, void *arg) = 0;
   virtual noresult set_title_impl(const std::string &title) = 0;
   virtual noresult set_size_impl(int width, int height,
                                  webview_hint_t hints) = 0;
@@ -3564,7 +3567,8 @@ class webview2_com_handler
     : public ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler,
       public ICoreWebView2CreateCoreWebView2ControllerCompletedHandler,
       public ICoreWebView2WebMessageReceivedEventHandler,
-      public ICoreWebView2PermissionRequestedEventHandler {
+      public ICoreWebView2PermissionRequestedEventHandler,
+      public ICoreWebView2NavigationCompletedEventHandler{
   using webview2_com_handler_cb_t =
       std::function<void(ICoreWebView2Controller *, ICoreWebView2 *webview)>;
 
@@ -3642,6 +3646,7 @@ public:
     controller->get_CoreWebView2(&webview);
     webview->add_WebMessageReceived(this, &token);
     webview->add_PermissionRequested(this, &token);
+    webview->add_NavigationCompleted(this, &token);
 
     m_cb(controller, webview);
     return S_OK;
@@ -3667,6 +3672,18 @@ public:
       args->put_State(COREWEBVIEW2_PERMISSION_STATE_ALLOW);
     }
     return S_OK;
+  }
+  HRESULT STDMETHODCALLTYPE
+  Invoke(ICoreWebView2 *sender, ICoreWebView2NavigationCompletedEventArgs *args) {
+    PWSTR wide_uri = nullptr;
+    auto hr = sender->get_Source(&wide_uri);
+    if (SUCCEEDED(hr)) {
+      auto narrow_uri = narrow_string(wide_uri);
+      if (m_navigate_callback)
+        m_navigate_callback(narrow_uri, m_navigate_callback_arg);
+    }
+    CoTaskMemFree(wide_uri);
+    return hr;
   }
 
   // Set the function that will perform the initiating logic for creating
@@ -3701,6 +3718,11 @@ public:
     m_cb(nullptr, nullptr);
   }
 
+  void set_navigate_listener(navigate_cb_fn_t callback, void *arg) {
+    m_navigate_callback = std::move(callback);
+    m_navigate_callback_arg = arg;
+  }
+
 private:
   HWND m_window;
   msg_cb_t m_msgCb;
@@ -3709,6 +3731,8 @@ private:
   std::function<HRESULT()> m_attempt_handler;
   unsigned int m_max_attempts = 5;
   unsigned int m_attempts = 0;
+  void *m_navigate_callback_arg = nullptr;
+  navigate_cb_fn_t m_navigate_callback = nullptr;
 };
 
 class webview2_user_script_added_handler
@@ -4135,6 +4159,11 @@ protected:
     //       ICoreWebView2::get_Source because it returns "about:blank".
     auto wjs = widen_string(js);
     m_webview->ExecuteScript(wjs.c_str(), nullptr);
+    return {};
+  }
+
+  noresult set_navigate_listener_impl(navigate_cb_fn_t callback, void *arg) override{
+    m_com_handler->set_navigate_listener(callback, arg);
     return {};
   }
 

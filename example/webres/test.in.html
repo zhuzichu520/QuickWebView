@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="tailwindcss.js"></script>
+    <style type="text/tailwindcss">
+        .btn-primary {
+            @apply bg-blue-500 hover:bg-blue-600 active:bg-blue-700 px-1 py-1 text-white rounded mx-2.5;
+        }
+        .input-primary {
+            @apply border border-gray-300 rounded px-1 py-1 rounded mx-2.5;
+        }
+        .square-div {
+            @apply text-white flex items-center justify-center mx-auto;
+            background-color: #4CAF50;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="flex flex-col items-center min-h-screen w-full">
+    <h1 class="text-xl font-bold mb-4 w-full text-center mt-5">Web Area</h1>
+    <div class="flex flex-col space-y-3 w-full">
+        <button class="btn-primary" onclick="callNativeMethod()">调用native方法</button>
+        <div id="square-div" class="square-div">0</div> <!-- Added square div with white text -->
+        <input id="inpit-send" class="input-primary" style="margin-top: 40px;" type="text" placeholder="输入要发送的数据">
+        <button class="btn-primary" onclick="callSend()">发送</button>
+        <input id="inpit-receive" class="input-primary" type="text" placeholder="接收native过来的数据">
+    </div>
+</div>
+</body>
+<script>
+    const callNativeMethod = async () => {
+        try {
+            await window.increment()
+        } catch (error) {
+            console.error("调用native方法时发生错误:", error);
+        }
+    }
+    const increment = () => {
+        const squareDiv = document.getElementById('square-div');
+        let currentNumber = parseInt(squareDiv.textContent, 10);
+        if (currentNumber >= 100) {
+            squareDiv.textContent = 0;
+        } else {
+            squareDiv.textContent = currentNumber + 1;
+        }
+    }
+    const callSend= () =>{
+        const inpitSend = document.getElementById('inpit-send');
+        window.onReceive(inpitSend.value)
+    }
+    const onReceive= (data) =>{
+        const inpitReceive = document.getElementById('inpit-receive');
+        inpitReceive.value = data
+    }
+</script>
+</html>

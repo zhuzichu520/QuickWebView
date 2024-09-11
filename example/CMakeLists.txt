@@ -15,11 +15,16 @@ qt_add_executable(${PROJECT_NAME}
 
 set(RESOURCES_FILES
     qtquickcontrols2.conf
+    webres/test.in.html
+    webres/tailwindcss.in.js
 )
 
 set(QML_FILES
     main.qml
 )
+
+configure_file(webres/test.in.html ${CMAKE_CURRENT_BINARY_DIR}/webres/test.html COPYONLY)
+configure_file(webres/tailwindcss.in.js ${CMAKE_CURRENT_BINARY_DIR}/webres/tailwindcss.js COPYONLY)
 
 qt_add_qml_module(${PROJECT_NAME}
     URI example
