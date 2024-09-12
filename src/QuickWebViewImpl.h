@@ -29,7 +29,7 @@ public:
   Q_INVOKABLE void runJavaScript(const QString &js);
   Q_INVOKABLE void bind(const QString &name, QJSValue func);
   Q_INVOKABLE void unbind(const QString &name);
-  Q_INVOKABLE void setNavigateListener(QJSValue func);
+  Q_SIGNAL void pageFinished(const QString &url);
 
 protected:
   void resizeEvent(QResizeEvent *ev) override;
@@ -39,5 +39,4 @@ private:
 
 private:
   WEBVIEW *m_webview = nullptr;
-  long count = 0;
 };

@@ -4,15 +4,24 @@ import QuickWebView
 
 WindowContainer {
     id: control
+    property var url
     property bool debug: false
+    signal pageFinished(var url)
     Component.onCompleted: {
         web_impl.init(control.debug)
+        if(control.url){
+            web_impl.navigate(control.url)
+        }
     }
     window: QuickWebViewImpl{
         id: web_impl
+        onPageFinished:
+            (url)=>{
+                control.pageFinished(url)
+            }
     }
-    function navigate(url){
-        web_impl.navigate(url)
+    onUrlChanged: {
+        web_impl.navigate(control.url)
     }
     function runJavaScript(js){
         web_impl.runJavaScript(js)

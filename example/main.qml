@@ -110,19 +110,17 @@ ApplicationWindow {
                 id: webview
                 anchors.fill: parent
                 debug: true
-                Component.onCompleted: {
-                    webview.navigate("appdir:/webres/test.html")
-                    webview.setNavigateListener(function(url){
-                        loading.visible =false
-                        webview.bind("increment",function(req){
-                            window.count = window.count + 1
-                            if(window.count>100){
-                                window.count = 0
-                            }
-                        })
-                        webview.bind("onReceive",function(req){
-                            text_field_receive.text = req
-                        })
+                url: "appdir:/webres/test.html"
+                onPageFinished:{
+                    loading.visible =false
+                    webview.bind("increment",function(req){
+                        window.count = window.count + 1
+                        if(window.count>100){
+                            window.count = 0
+                        }
+                    })
+                    webview.bind("onReceive",function(req){
+                        text_field_receive.text = req
                     })
                 }
             }
@@ -148,7 +146,7 @@ ApplicationWindow {
                         width: parent.width
                         TextField{
                             id: text_field_url
-                            text: "https://www.bing.com/"
+                            text: webview_2.url
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
                         }
@@ -158,7 +156,7 @@ ApplicationWindow {
                             Layout.preferredWidth: 80
                             Layout.alignment: Qt.AlignVCenter
                             onClicked: {
-                                webview_2.navigate(text_field_url.text)
+                                webview_2.url = text_field_url.text
                             }
                         }
                     }
@@ -173,11 +171,9 @@ ApplicationWindow {
                     bottom: parent.bottom
                     margins: 10
                 }
-                Component.onCompleted: {
-                    webview_2.navigate(text_field_url.text)
-                    webview_2.setNavigateListener(function(url){
-                        loading_2.visible =false
-                    })
+                url: "https://www.bing.com/"
+                onPageFinished:{
+                    loading_2.visible =false
                 }
             }
 

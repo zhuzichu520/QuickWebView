@@ -17,19 +17,10 @@ void QuickWebViewImpl::init(bool debug) {
   m_webview = reinterpret_cast<WEBVIEW *>(
       new webview::webview(debug, reinterpret_cast<void *>(winId())));
   m_webview->resize_widget();
-}
-
-void QuickWebViewImpl::setNavigateListener(QJSValue func) {
-  if (!m_webview) {
-    return;
-  }
-  auto sharedFunc = std::make_shared<QJSValue>(func);
   m_webview->set_navigate_listener(
-      [sharedFunc, this](const std::string &uri, void *usercontext) {
-        QTimer::singleShot(50, this, [sharedFunc, uri] {
-          QJSValueList param;
-          param << QString::fromStdString(uri);
-          sharedFunc->call(param);
+      [this](const std::string &uri, void *usercontext) {
+        QTimer::singleShot(50, this, [this, uri] {
+          Q_EMIT pageFinished(QString::fromStdString(uri));
         });
       },
       nullptr);
@@ -107,4 +98,7 @@ void QuickWebViewImpl::loadHtml(const QString &html) {
   m_webview->set_html(html.toStdString());
 }
 
-QuickWebViewImpl::~QuickWebViewImpl() { delete m_webview; }
+QuickWebViewImpl::~QuickWebViewImpl() {
+  delete m_webview;
+  m_webview = nullptr;
+}
