@@ -2,9 +2,19 @@ cmake_minimum_required(VERSION 3.16)
 
 project(QuickWebView VERSION 0.1 LANGUAGES CXX)
 
+include(CMakeFindDependencyMacro)
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/webview.cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules")
+
+webview_options()
+webview_find_dependencies()
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(WEBVIEW_MSWEBVIEW2_VERSION "1.0.1150.38" CACHE STRING "MS WebView2 version")
+option(WEBVIEW_USE_BUILTIN_MSWEBVIEW2 "Use built-in MS WebView2" ON)
 
 find_package(Qt6 COMPONENTS Quick REQUIRED)
 
@@ -13,10 +23,14 @@ cmake_path(SET QT_SDK_DIR NORMALIZE ${QT_SDK_DIR})
 
 set(SOURCE_FILES
     stdafx.h
+    WebViewInterface.h
     QuickWebViewImpl.h QuickWebViewImpl.cpp
+    WindowsWebView.h WindowsWebView.cpp
+    WebCallBack.h WebCallBack.cpp
 )
 
 set(QML_FILES
+    JSBridge.qml
     QuickWebView.qml
 )
 
@@ -46,6 +60,5 @@ qt_add_qml_module(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
-    webview::headers
+    ${WEBVIEW_DEPENDENCIES}
 )
-

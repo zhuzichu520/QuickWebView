@@ -16,6 +16,6 @@ message("Build QuickWebView static library: ${QUICKWEBVIEW_BUILD_STATIC_LIB}")
 message("Universal build QuickWebView for macOS: ${QUICKWEBVIEW_BUILD_STATIC_LIB}")
 message("------------------------------------------------------------------")
 
-add_subdirectory(webview)
+# add_subdirectory(webview)
 add_subdirectory(src)
 add_subdirectory(example)

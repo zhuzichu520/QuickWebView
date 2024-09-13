@@ -36,6 +36,7 @@
 <script>
     const callNativeMethod = async () => {
         try {
+            console.info(window)
             await window.increment()
         } catch (error) {
             console.error("调用native方法时发生错误:", error);

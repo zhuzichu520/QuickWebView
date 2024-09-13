@@ -11,10 +11,13 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(MSWebView2 REQUIRED_VARS MSWebView2_INCLUDE_DIR)
 
 if(MSWebView2_FOUND)
+    set(MSWebView2_ROOT_DIR "${MSWebView2_INCLUDE_DIR}/..")
+    cmake_path(SET MSWebView2_ROOT_DIR NORMALIZE ${MSWebView2_ROOT_DIR})
     if(NOT TARGET MSWebView2::headers)
-        add_library(MSWebView2::headers INTERFACE IMPORTED)
+        add_library(MSWebView2::headers STATIC IMPORTED)
         set_target_properties(MSWebView2::headers PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES "${MSWebView2_INCLUDE_DIR}")
-        target_compile_features(MSWebView2::headers INTERFACE cxx_std_14)
+            INTERFACE_INCLUDE_DIRECTORIES "${MSWebView2_INCLUDE_DIR}"
+            IMPORTED_LOCATION "${MSWebView2_ROOT_DIR}/x64/WebView2LoaderStatic.lib"
+        )
     endif()
 endif()

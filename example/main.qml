@@ -176,7 +176,6 @@ ApplicationWindow {
                     loading_2.visible =false
                 }
             }
-
             Loading {
                 id: loading_2
                 anchors.fill: parent

@@ -7,21 +7,32 @@ WindowContainer {
     property var url
     property bool debug: false
     signal pageFinished(var url)
+    readonly property bool initialized: d.isInitialized
     Component.onCompleted: {
         web_impl.init(control.debug)
-        if(control.url){
-            web_impl.navigate(control.url)
-        }
     }
     window: QuickWebViewImpl{
         id: web_impl
-        onPageFinished:
-            (url)=>{
-                control.pageFinished(url)
-            }
+        onPageFinished:(url)=>{
+                           control.pageFinished(url)
+                       }
+        onInitialized:(success)=>{
+                          d.isInitialized =success
+                          if(success){
+                              if(control.url){
+                                  web_impl.navigate(control.url)
+                              }
+                          }
+                      }
+    }
+    QtObject{
+        id: d
+        property bool isInitialized: false
     }
     onUrlChanged: {
-        web_impl.navigate(control.url)
+        if(d.isInitialized){
+            web_impl.navigate(control.url)
+        }
     }
     function runJavaScript(js){
         web_impl.runJavaScript(js)
