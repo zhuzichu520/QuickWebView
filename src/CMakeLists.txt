@@ -25,7 +25,6 @@ set(SOURCE_FILES
     stdafx.h
     WebViewInterface.h
     QuickWebViewImpl.h QuickWebViewImpl.cpp
-    WindowsWebView.h WindowsWebView.cpp
     WebCallBack.h WebCallBack.cpp
 )
 
