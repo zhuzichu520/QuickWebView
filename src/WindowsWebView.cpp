@@ -31,31 +31,6 @@ WindowsWebView::~WindowsWebView() {
     }
 }
 
-HRESULT WindowsWebView::OnEnvironmentCreated(HRESULT result, ICoreWebView2Environment *env,
-                                             bool debug) {
-    if (SUCCEEDED(result)) {
-        env->CreateCoreWebView2Controller(
-            m_childWindowHandle,
-            Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                [this, debug](HRESULT result, ICoreWebView2Controller *controller) -> HRESULT {
-                    if (SUCCEEDED(result)) {
-                        m_webViewController = controller;
-                        m_webViewController->AddRef();
-                        m_webViewController->get_CoreWebView2(&m_webView);
-                        m_webView->AddRef();
-                        ICoreWebView2Settings *settings;
-                        m_webView->get_Settings(&settings);
-                        settings->put_AreDevToolsEnabled(debug ? TRUE : FALSE);
-                        settings->put_AreDefaultContextMenusEnabled(FALSE);
-                        m_webViewController->put_IsVisible(TRUE);
-                    }
-                    return S_OK;
-                })
-                .Get());
-    }
-    return S_OK;
-}
-
 void WindowsWebView::init(bool debug, QWindow *window, WebCallBack *callBack) {
     m_window = window;
     m_callBack = callBack;

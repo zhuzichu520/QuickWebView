@@ -25,9 +25,6 @@ public:
     void runJavaScript(const QString &js);
 
 private:
-    HRESULT OnEnvironmentCreated(HRESULT result, ICoreWebView2Environment *env, bool debug);
-
-private:
     ComPtr<ICoreWebView2Controller> m_webViewController;
     ComPtr<ICoreWebView2> m_webView;
     QWindow *m_childWindow;

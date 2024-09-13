@@ -37,7 +37,6 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 endif()
 
 set(QML_FILES
-    JSBridge.qml
     QuickWebView.qml
 )
 
