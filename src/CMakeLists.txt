@@ -29,6 +29,14 @@ set(SOURCE_FILES
     WebCallBack.h WebCallBack.cpp
 )
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    list(APPEND SOURCE_FILES MacosWebView.h MacosWebView.mm)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND SOURCE_FILES LinuxWebView.h LinuxWebView.cpp)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    list(APPEND SOURCE_FILES WindowsWebView.h WindowsWebView.cpp)
+endif()
+
 set(QML_FILES
     JSBridge.qml
     QuickWebView.qml
