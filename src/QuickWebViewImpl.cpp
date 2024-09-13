@@ -36,7 +36,7 @@ void QuickWebViewImpl::resizeWebView() {
 
 void QuickWebViewImpl::navigate(const QString &url) {
     if (url.startsWith("appdir:")) {
-        QString file = QGuiApplication::applicationDirPath() + url.mid(7);
+        QString file = "file://"+ QGuiApplication::applicationDirPath() + url.mid(7);
         m_webView.navigate(file);
     } else {
         m_webView.navigate(url);
@@ -51,7 +51,18 @@ void QuickWebViewImpl::unbind(const QString &name) {
 }
 
 void QuickWebViewImpl::loadHtml(const QString &html) {
+    m_webView.loadHtml(html);
 }
 
 QuickWebViewImpl::~QuickWebViewImpl() {
+}
+
+QString QuickWebViewImpl::readFile(const QString &fileName) {
+    QString content;
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly)) {
+        QTextStream stream(&file);
+        content = stream.readAll();
+    }
+    return content;
 }

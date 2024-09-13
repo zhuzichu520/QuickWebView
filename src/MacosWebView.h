@@ -7,7 +7,8 @@
 
 #include "WebCallBack.h"
 #include "WebViewInterface.h"
-
+Q_FORWARD_DECLARE_OBJC_CLASS(WKWebView);
+Q_FORWARD_DECLARE_OBJC_CLASS(WKNavigation);
 
 class MacosWebView : public WebViewInterface {
 
@@ -19,6 +20,8 @@ public:
     void resizeWebView();
     void bind(const QString &name, QJSValue func);
     void runJavaScript(const QString &js);
+    void loadHtml(const QString &html);
+    void onPageFinished(const QString &url);
 
 private:
     QWindow *m_childWindow;
@@ -26,4 +29,7 @@ private:
     WebCallBack *m_callBack;
     QString m_userDataFolder;
     QMap<QString, QJSValue> m_bindings;
+    WKWebView *m_wkWebView;
+public:
+    WKNavigation *m_wkNavigation;
 };

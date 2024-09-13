@@ -48,8 +48,17 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     QuickWebView
 )
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(WEBRES_DIR ${CMAKE_CURRENT_BINARY_DIR}/example.app/Contents/MacOS/webres)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(WEBRES_DIR ${CMAKE_CURRENT_BINARY_DIR}/webres)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(WEBRES_DIR ${CMAKE_CURRENT_BINARY_DIR}/webres)
+endif()
+
+
 add_custom_target(${PROJECT_NAME}_webres
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/webres ${CMAKE_CURRENT_BINARY_DIR}/webres
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/webres ${WEBRES_DIR}
     SOURCES ${WEBRES_FILES}
 )
 

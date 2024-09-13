@@ -1,17 +1,17 @@
 #pragma once
 
 #include "WebCallBack.h"
-#include "WindowsWebView.h"
+#include "MacosWebView.h"
 #include <QObject>
 #include <QWindow>
 #include <QtQml/qqml.h>
 
 #ifdef Q_OS_MACOS
-using WEBVIEW = webview::webview;
+using WEBVIEW = MacosWebView;
 #endif
 
 #ifdef Q_OS_LINUX
-using WEBVIEW = webview::webview;
+using WEBVIEW = LinuxWebView;
 #endif
 
 #ifdef Q_OS_WIN
@@ -38,6 +38,7 @@ protected:
 
 private:
     void resizeWebView();
+    QString readFile(const QString &fileName);
 
 private:
     WEBVIEW m_webView;
