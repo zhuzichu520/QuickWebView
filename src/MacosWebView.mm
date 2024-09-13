@@ -8,11 +8,10 @@
 #import <WebKit/WebKit.h>
 
 @interface WebViewDelegate : NSObject <WKNavigationDelegate> {
-                                 MacosWebView *qWebView;
+    MacosWebView *qWebView;
 }
 - (WebViewDelegate *)initWithWebView:(MacosWebView *)webViewPrivate;
-- (void)webView:(WKWebView *)webView
-  didFinishNavigation:(WKNavigation *)navigation;
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation;
 @end
 
 @implementation WebViewDelegate
@@ -25,9 +24,8 @@
     return self;
 }
 
-- (void)webView:(WKWebView *)webView
-  didFinishNavigation:(WKNavigation *)navigation {
-    NSURL *currentURL = webView.URL;  // Get the current URL of the WKWebView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    NSURL *currentURL = webView.URL; // Get the current URL of the WKWebView
     NSString *urlString = [currentURL absoluteString];
     qWebView->onPageFinished(QString::fromUtf8([urlString UTF8String]));
 }
@@ -56,36 +54,38 @@ MacosWebView::~MacosWebView() {
 void MacosWebView::init(bool debug, QWindow *window, WebCallBack *callBack) {
     this->m_window = window;
     this->m_callBack = callBack;
-    WKWebView *webView = [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, window->width(), window->height())];
+    WKWebView *webView =
+        [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, window->width(), window->height())];
     WKPreferences *preferences = webView.configuration.preferences;
     [preferences setValue:@(debug) forKey:@"developerExtrasEnabled"];
     WKWebsiteDataStore *dataStore = [WKWebsiteDataStore defaultDataStore];
     NSSet *websiteDataTypes = [WKWebsiteDataStore allWebsiteDataTypes];
     NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
-    [dataStore removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom
-                                 completionHandler:^{
-                                     NSLog(@"All website data has been cleared");}];
-m_wkWebView = webView;
-m_wkWebView.navigationDelegate =
-    [[WebViewDelegate alloc] initWithWebView:this];
-m_childWindow = QWindow::fromWinId(WId(m_wkWebView));
-if (m_childWindow) {
-    m_childWindow->setParent(window);
-    m_childWindow->setFlags(Qt::WindowType::Widget);
-}
-if (m_callBack) {
-    m_callBack->initialized(true);
-}
+    [dataStore removeDataOfTypes:websiteDataTypes
+                   modifiedSince:dateFrom
+               completionHandler:^{
+                   NSLog(@"All website data has been cleared");
+               }];
+    m_wkWebView = webView;
+    m_wkWebView.navigationDelegate = [[WebViewDelegate alloc] initWithWebView:this];
+    m_childWindow = QWindow::fromWinId(WId(m_wkWebView));
+    if (m_childWindow) {
+        m_childWindow->setParent(window);
+        m_childWindow->setFlags(Qt::WindowType::Widget);
+    }
+    if (m_callBack) {
+        m_callBack->initialized(true);
+    }
 }
 
 void MacosWebView::navigate(const QString &url) {
-    qDebug()<<url;
+    qDebug() << url;
     auto uri = QUrl(url);
     NSURL *nsurl = QUrl(url).toNSURL();
-    if(url.startsWith("/")){
-        qDebug()<<"---->"<<nsurl;
+    if (url.startsWith("/")) {
+        qDebug() << "---->" << nsurl;
         [m_wkWebView loadFileURL:nsurl allowingReadAccessToURL:nsurl];
-    }else{
+    } else {
         [m_wkWebView loadRequest:[NSURLRequest requestWithURL:nsurl]];
     }
 }
@@ -102,10 +102,9 @@ window.chrome.webview.postMessage({
 }
 
 void MacosWebView::runJavaScript(const QString &js) {
-
 }
 
-void MacosWebView::loadHtml(const QString &html){
+void MacosWebView::loadHtml(const QString &html) {
     NSString *htmlString = [NSString stringWithUTF8String:html.toUtf8().constData()];
     [m_wkWebView loadHTMLString:htmlString baseURL:nil];
 }
@@ -121,7 +120,7 @@ void MacosWebView::resizeWebView() {
     }
 }
 
-void MacosWebView::onPageFinished(const QString &url){
+void MacosWebView::onPageFinished(const QString &url) {
     if (m_callBack) {
         m_callBack->pageFinished(url);
     }

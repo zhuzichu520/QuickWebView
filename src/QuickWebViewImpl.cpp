@@ -36,7 +36,7 @@ void QuickWebViewImpl::resizeWebView() {
 
 void QuickWebViewImpl::navigate(const QString &url) {
     if (url.startsWith("appdir:")) {
-        QString file = "file://"+ QGuiApplication::applicationDirPath() + url.mid(7);
+        QString file = "file://" + QGuiApplication::applicationDirPath() + url.mid(7);
         m_webView.navigate(file);
     } else {
         m_webView.navigate(url);

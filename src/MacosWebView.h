@@ -16,11 +16,13 @@ public:
     MacosWebView();
     ~MacosWebView();
     void init(bool debug, QWindow *window, WebCallBack *callBack) override;
-    void navigate(const QString &url);
-    void resizeWebView();
-    void bind(const QString &name, QJSValue func);
-    void runJavaScript(const QString &js);
-    void loadHtml(const QString &html);
+    void navigate(const QString &url) override;
+    void resizeWebView() override;
+    void bind(const QString &name, QJSValue func) override;
+    void runJavaScript(const QString &js) override;
+    void loadHtml(const QString &html) override;
+
+public:
     void onPageFinished(const QString &url);
 
 private:
