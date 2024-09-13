@@ -163,3 +163,6 @@ void WindowsWebView::resizeWebView() {
         }
     }
 }
+
+void WindowsWebView::loadHtml(const QString &html) {
+}

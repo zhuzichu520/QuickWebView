@@ -1,12 +1,12 @@
 #pragma once
 
 #include "WebCallBack.h"
-#include "MacosWebView.h"
 #include <QObject>
 #include <QWindow>
 #include <QtQml/qqml.h>
 
 #ifdef Q_OS_MACOS
+#  include "MacosWebView.h"
 using WEBVIEW = MacosWebView;
 #endif
 
@@ -15,6 +15,7 @@ using WEBVIEW = LinuxWebView;
 #endif
 
 #ifdef Q_OS_WIN
+#  include "WindowsWebView.h"
 using WEBVIEW = WindowsWebView;
 #endif
 

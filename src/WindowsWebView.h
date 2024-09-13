@@ -23,6 +23,7 @@ public:
     void resizeWebView();
     void bind(const QString &name, QJSValue func);
     void runJavaScript(const QString &js);
+    void loadHtml(const QString &html);
 
 private:
     ComPtr<ICoreWebView2Controller> m_webViewController;
