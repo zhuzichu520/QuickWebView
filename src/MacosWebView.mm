@@ -32,6 +32,41 @@
 
 @end
 
+@interface MessageHandler : NSObject <WKScriptMessageHandler> {
+    MacosWebView *qWebView;
+}
+- (MessageHandler *)initWithWebView:(MacosWebView *)webViewPrivate;
+@end
+
+@implementation MessageHandler
+
+- (MessageHandler *)initWithWebView:(MacosWebView *)webViewPrivate {
+    if ((self = [super init])) {
+        Q_ASSERT(webViewPrivate);
+        qWebView = webViewPrivate;
+    }
+    return self;
+}
+
+- (void)userContentController:(WKUserContentController *)userContentController
+      didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@"postMessageHandler"]) {
+        NSDictionary *body = (NSDictionary *) message.body;
+        NSString *method = body[@"method"];
+        id data = body[@"data"];
+        if (qWebView->m_bindings.contains(QString::fromUtf8([method UTF8String]))) {
+            QJSValue func = qWebView->m_bindings.value(QString::fromUtf8([method UTF8String]));
+            QJSValueList args;
+            args << QJSValue(QString::fromUtf8([data description].UTF8String));
+            func.call(args);
+        } else {
+            qDebug() << "No binding found for method:" << method;
+        }
+    }
+}
+
+@end
+
 MacosWebView::MacosWebView() {
     QString appDataLocation = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     m_userDataFolder = QDir(appDataLocation).filePath("WebView2UserData");
@@ -54,8 +89,14 @@ MacosWebView::~MacosWebView() {
 void MacosWebView::init(bool debug, QWindow *window, WebCallBack *callBack) {
     this->m_window = window;
     this->m_callBack = callBack;
+    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+    WKUserContentController *userContentController = [[WKUserContentController alloc] init];
+    [userContentController addScriptMessageHandler:[[MessageHandler alloc] initWithWebView:this]
+                                              name:@"postMessageHandler"];
+    configuration.userContentController = userContentController;
     WKWebView *webView =
-        [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, window->width(), window->height())];
+        [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, window->width(), window->height()),
+                           configuration:configuration];
     WKPreferences *preferences = webView.configuration.preferences;
     [preferences setValue:@(debug) forKey:@"developerExtrasEnabled"];
     WKWebsiteDataStore *dataStore = [WKWebsiteDataStore defaultDataStore];
@@ -79,7 +120,6 @@ void MacosWebView::init(bool debug, QWindow *window, WebCallBack *callBack) {
 }
 
 void MacosWebView::navigate(const QString &url) {
-    qDebug() << url;
     auto uri = QUrl(url);
     NSURL *nsurl = QUrl(url).toNSURL();
     if (url.startsWith("/")) {
@@ -101,7 +141,7 @@ window.chrome.webview.postMessage({
     runJavaScript(jsTemp.arg(name));
 }
 
-void WindowsWebView::unbind(const QString &name) {
+void MacosWebView::unbind(const QString &name) {
     m_bindings.remove(name);
 }
 
