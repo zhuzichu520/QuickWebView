@@ -23,16 +23,13 @@ public:
     void runJavaScript(const QString &js) override;
     void loadHtml(const QString &html) override;
 
-public:
-    void onPageFinished(const QString &url);
-
 private:
     QWindow *m_childWindow;
     QWindow *m_window;
-    WebCallBack *m_callBack;
     QString m_userDataFolder;
     WKWebView *m_wkWebView;
 public:
+    WebCallBack *m_callBack;
     WKNavigation *m_wkNavigation;
     QMap<QString, QJSValue> m_bindings;
 };

@@ -27,7 +27,13 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     NSURL *currentURL = webView.URL; // Get the current URL of the WKWebView
     NSString *urlString = [currentURL absoluteString];
-    qWebView->onPageFinished(QString::fromUtf8([urlString UTF8String]));
+    if (qWebView->m_callBack) {
+        qWebView->m_callBack->pageFinished(QString::fromUtf8([urlString UTF8String]));
+    }
+    NSString *title = webView.title;
+    if (qWebView->m_callBack) {
+        qWebView->m_callBack->titleChanged(QString::fromUtf8([title UTF8String]));
+    }
 }
 
 @end
@@ -162,11 +168,5 @@ void MacosWebView::resizeWebView() {
     }
     if (m_childWindow) {
         m_childWindow->setGeometry(0, 0, width, height);
-    }
-}
-
-void MacosWebView::onPageFinished(const QString &url) {
-    if (m_callBack) {
-        m_callBack->pageFinished(url);
     }
 }
