@@ -31,8 +31,8 @@ private:
     QWindow *m_window;
     WebCallBack *m_callBack;
     QString m_userDataFolder;
-    QMap<QString, QJSValue> m_bindings;
     WKWebView *m_wkWebView;
 public:
     WKNavigation *m_wkNavigation;
+    QMap<QString, QJSValue> m_bindings;
 };

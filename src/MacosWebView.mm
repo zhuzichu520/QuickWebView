@@ -95,7 +95,7 @@ void MacosWebView::init(bool debug, QWindow *window, WebCallBack *callBack) {
                                               name:@"postMessageHandler"];
     configuration.userContentController = userContentController;
     WKWebView *webView =
-        [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, window->width(), window->height()),
+        [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, window->width(), window->height())
                            configuration:configuration];
     WKPreferences *preferences = webView.configuration.preferences;
     [preferences setValue:@(debug) forKey:@"developerExtrasEnabled"];
@@ -123,7 +123,6 @@ void MacosWebView::navigate(const QString &url) {
     auto uri = QUrl(url);
     NSURL *nsurl = QUrl(url).toNSURL();
     if (url.startsWith("/")) {
-        qDebug() << "---->" << nsurl;
         [m_wkWebView loadFileURL:nsurl allowingReadAccessToURL:nsurl];
     } else {
         [m_wkWebView loadRequest:[NSURLRequest requestWithURL:nsurl]];
