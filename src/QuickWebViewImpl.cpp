@@ -57,13 +57,3 @@ void QuickWebViewImpl::loadHtml(const QString &html) {
 
 QuickWebViewImpl::~QuickWebViewImpl() {
 }
-
-QString QuickWebViewImpl::readFile(const QString &fileName) {
-    QString content;
-    QFile file(fileName);
-    if (file.open(QIODevice::ReadOnly)) {
-        QTextStream stream(&file);
-        content = stream.readAll();
-    }
-    return content;
-}

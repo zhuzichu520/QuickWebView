@@ -41,7 +41,6 @@ protected:
 
 private:
     void resizeWebView();
-    QString readFile(const QString &fileName);
 
 private:
     WEBVIEW m_webView;
