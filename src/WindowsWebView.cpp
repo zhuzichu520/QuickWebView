@@ -143,6 +143,10 @@ window.chrome.webview.postMessage({
     runJavaScript(jsTemp.arg(name));
 }
 
+void WindowsWebView::unbind(const QString &name) {
+    m_bindings.remove(name);
+}
+
 void WindowsWebView::runJavaScript(const QString &js) {
     m_webView->ExecuteScript(js.toStdWString().c_str(), nullptr);
 }
@@ -165,4 +169,5 @@ void WindowsWebView::resizeWebView() {
 }
 
 void WindowsWebView::loadHtml(const QString &html) {
+    m_webView->NavigateToString(html.toStdWString().c_str());
 }

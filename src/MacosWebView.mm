@@ -101,7 +101,13 @@ window.chrome.webview.postMessage({
     runJavaScript(jsTemp.arg(name));
 }
 
+void WindowsWebView::unbind(const QString &name) {
+    m_bindings.remove(name);
+}
+
 void MacosWebView::runJavaScript(const QString &js) {
+    NSString *javaScriptString = [NSString stringWithUTF8String:js.toUtf8().constData()];
+    [m_wkWebView evaluateJavaScript:javaScriptString completionHandler:nil];
 }
 
 void MacosWebView::loadHtml(const QString &html) {

@@ -13,4 +13,5 @@ public:
     virtual void bind(const QString &name, QJSValue func) = 0;
     virtual void runJavaScript(const QString &js) = 0;
     virtual void loadHtml(const QString &html) = 0;
+    virtual void unbind(const QString &name) = 0;
 };

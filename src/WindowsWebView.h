@@ -21,6 +21,7 @@ public:
     void navigate(const QString &url) override;
     void resizeWebView() override;
     void bind(const QString &name, QJSValue func) override;
+    void unbind(const QString &name) override;
     void runJavaScript(const QString &js) override;
     void loadHtml(const QString &html) override;
 
