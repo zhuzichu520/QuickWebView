@@ -131,11 +131,11 @@ void MacosWebView::navigate(const QString &url) {
 
 void MacosWebView::bind(const QString &name, QJSValue func) {
     m_bindings.insert(name, func);
-    auto jsTemp = QString(R"(window.%1 = function(data){
-window.chrome.webview.postMessage({
-    method: '%1',
-    data: data
-});
+    auto jsTemp = QString(R"(window.%1 = function(data) {
+window.webkit.messageHandlers.postMessageHandler.postMessage({
+        method: '%1',
+        data: data
+    });
 };)");
     runJavaScript(jsTemp.arg(name));
 }
