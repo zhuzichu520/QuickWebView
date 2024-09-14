@@ -4,7 +4,8 @@
 
 class WebCallBack {
 public:
-  WebCallBack();
-  std::function<void(bool)> initialized;
-  std::function<void(QString)> pageFinished;
+    WebCallBack();
+    std::function<void(bool)> initialized;
+    std::function<void(QString)> pageFinished;
+    std::function<void(QString)> titleChanged;
 };

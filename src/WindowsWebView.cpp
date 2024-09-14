@@ -95,6 +95,14 @@ void WindowsWebView::init(bool debug, QWindow *window, WebCallBack *callBack) {
                                             [this](ICoreWebView2 *sender,
                                                    ICoreWebView2NavigationCompletedEventArgs *args)
                                                 -> HRESULT {
+                                                PWSTR title = nullptr;
+                                                sender->get_DocumentTitle(&title);
+                                                QString pageTitle =
+                                                    QString::fromStdWString(std::wstring(title));
+                                                CoTaskMemFree(title);
+                                                if (m_callBack) {
+                                                    m_callBack->titleChanged(pageTitle);
+                                                }
                                                 PWSTR wide_uri = nullptr;
                                                 auto hr = sender->get_Source(&wide_uri);
                                                 if (SUCCEEDED(hr)) {

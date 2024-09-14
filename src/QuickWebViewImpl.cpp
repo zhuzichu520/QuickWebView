@@ -23,6 +23,7 @@ void QuickWebViewImpl::init(bool debug) {
         Q_EMIT this->initialized(success);
     });
     m_callBack->pageFinished = ([this](const QString &url) { Q_EMIT pageFinished(url); });
+    m_callBack->titleChanged = ([this](const QString &title) { this->title(title); });
     m_webView.init(debug, this, m_callBack);
 }
 

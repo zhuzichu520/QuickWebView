@@ -172,6 +172,9 @@ ApplicationWindow {
                     margins: 10
                 }
                 url: "https://www.bing.com/"
+                onTitleChanged:{
+                    console.debug(title)
+                }
                 onPageFinished:{
                     loading_2.visible =false
                 }

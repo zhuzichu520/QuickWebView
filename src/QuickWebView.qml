@@ -8,6 +8,7 @@ WindowContainer {
     property bool debug: false
     signal pageFinished(var url)
     readonly property bool initialized: d.isInitialized
+    readonly property string title: web_impl.title
     Component.onCompleted: {
         web_impl.init(control.debug)
     }

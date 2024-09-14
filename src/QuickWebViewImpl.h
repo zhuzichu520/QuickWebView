@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WebCallBack.h"
+#include "stdafx.h"
 #include <QObject>
 #include <QWindow>
 #include <QtQml/qqml.h>
@@ -22,6 +23,7 @@ using WEBVIEW = WindowsWebView;
 class QuickWebViewImpl : public QWindow {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY_AUTO(QString, title)
 public:
     explicit QuickWebViewImpl(QWindow *parent = nullptr);
     ~QuickWebViewImpl();
